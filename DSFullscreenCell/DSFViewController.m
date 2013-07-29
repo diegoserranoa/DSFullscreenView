@@ -119,6 +119,9 @@
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    // Disable scroll on tableview
+    self.tableView.scrollEnabled = NO;
+    
     UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
     
     fullscreenView = [self.storyboard instantiateViewControllerWithIdentifier:@"FullscreenView"];
@@ -138,7 +141,7 @@
     [UIView animateWithDuration:1.0f animations:^{
         CGRect theFrame = fullscreenView.view.frame;
         theFrame.size.height = self.view.frame.size.height;
-        theFrame.origin.y = 0;
+        theFrame.origin.y = self.tableView.contentOffset.y;
         fullscreenView.view.frame = theFrame;
     } completion:^(BOOL finished) {
         if (finished) {
@@ -161,8 +164,9 @@
 - (void) fullscreenViewDismissed:(NSNotification *)notification
 {
     if ([[notification name] isEqualToString:@"fullscreenViewDismissed"]){
-        NSLog(@"Fullscreen View dismissed. Remove subview.");
+        NSLog(@"Fullscreen View dismissed. Remove subview. Enable scroll on tableview.");
         [fullscreenView.view removeFromSuperview];
+        self.tableView.scrollEnabled = YES;
     }
 }
 
